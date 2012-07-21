@@ -93,5 +93,42 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 </table></td></tr>
 <tr><td>First Child ID</td><td class="mono">UInt32</td><td>Node ID of first child. Present but ignored if child count is zero (0).</td></tr>
 </table>
+
+<h3>String (2-65537 bytes)</h3>
+<p>Each string is assigned a zero-based unsigned 32-bit ID in the order they appear in the string block; that is, the first string has ID 0, the second string has ID 1, and so on. This ID is used to refer to strings throughout the file.</p>
+<table>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
+<tr><td>Length</td><td class="mono">UInt16</td><td>Length in bytes of the following string</td></tr>
+<tr><td>String data</td><td class="mono">UInt8[]</td><td>String data, encoded in UTF-8. This byte array is <span class="mono">Length</span> bytes long.</td></tr>
+</table>
+
+<h3>Bitmap (8-4294967303 bytes)</h3>
+<p>Each bitmap is assigned a zero-based unsigned 32-bit ID. Offsets to bitmaps are located in the Bitmap offset table. Bitmaps do not need to be in a contiguous block, though this is recommended.</p>
+<table>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
+<tr><td>Width</td><td class="mono">UInt16</td><td>Width, in pixels, of the image</td></tr>
+<tr><td>Height</td><td class="mono">UInt16</td><td>Height, in pixels, of the image</td></tr>
+<tr><td>Length</td><td class="mono">UInt32</td><td>Length, in bytes, of the image data. Uncompressed length is <span class="mono">width * height * 4</span></td></tr>
+<tr><td>Data</td><td class="mono">UInt8[]</td><td>Image data, stored in BGRA8888 format, that is, 1 byte each for the blue, green, red and alpha components, in that order. This data is compressed with LZ4. This byte array is <span class="mono">Length</span> bytes long.</td></tr>
+</table>
+
+<h3>MP3 (4-4294967299 bytes)</h3>
+<p>Each MP3 is assigned a zero-based unsigned 32-bit ID. Offsets to MP3s are located in the MP3 offset table. MP3s do not need to be a contiguous block, though this is recommended.</p>
+<table>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
+<tr><td>Length</td><td class="mono">UInt32</td><td>Length, in bytes, of the MP3 data.</td></tr>
+<tr><td>MP3 data</td><td class="mono">UInt8[]</td><td>MP3 data. This byte array is <span class="mono">Length</span> bytes long.</td></tr>
+</table>
+
+<h3>Offset Table</h3>
+<p>Offset arrays are used to refer to Bitmaps and MP3s.</p>
+<table>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
+<tr><td>Offset Array</td><td class="mono">UInt64[]</td><td>Sequential offset array; the first offset has ID 0, the second has ID 1, and so on.</td></tr>
+</table>
 </body>
 </html>
