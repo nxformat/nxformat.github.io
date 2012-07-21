@@ -71,7 +71,9 @@ th {
 <h3>Node (20 bytes)</h3>
 <p>Each node is assigned a zero-based 32-bit unsigned ID in the order nodes appear in the node block; that is, the first node (the base node) has ID 0, the second node has ID 1, and so on. This ID is used to point to child nodes in nodes.<br />
 <br />
-All nodes should be in one contiguous block, which should be of size <span class="mono">20 * Number of nodes</span>. Children nodes of each parent node must be consecutive in one contiguous block, and the ID of the first child in the block is specified in the <em>First Child ID</em> field of the parent node.</p>
+All nodes should be in one contiguous block, which should be of size <span class="mono">20 * Number of nodes</span>. Children nodes of each parent node must be consecutive in one contiguous block, and the ID of the first child in the block is specified in the <em>First Child ID</em> field of the parent node.
+
+The base node should have an ID of 0, and <em>preferably</em> have type 0 (None).</p>
 <table>
 <tr><th>Name</th><th>Type</th><th>Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
