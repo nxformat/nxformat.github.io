@@ -52,10 +52,10 @@ th {
 </table>
 
 <h3>Header (52 bytes)</h3>
-<table style="margin-top: 3px;">
+<table>
 <tr><th>Name</th><th>Type</th><th>Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">“PKG3” = {0x50, 0x4B, 0x47, 0x33}</td></tr>
+<tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">"PKG3" = {0x50, 0x4B, 0x47, 0x33}</td></tr>
 <tr><td>Node count</td><td class="mono">UInt32</td><td>Total number of nodes in the file. Cannot be zero.</td></tr>
 <tr><td>Node block offset</td><td class="mono">Node*</td><td>Unsigned 64-bit offset to the start of the node block, which should be the base node: the parent of all other nodes in the file.</td></tr>
 <tr><td>String count</td><td class="mono">UInt32</td><td>Total number of string entries in the file. Cannot be zero.</td></tr>
@@ -64,6 +64,30 @@ th {
 <tr><td>Bitmap offset table offset</td><td class="mono">OffsetTable*</td><td>Unsigned 64-bit offset to the bitmap offset table in the file, with the number of entries equal to the bitmap count. If count is zero, this is present but ignored.</td></tr>
 <tr><td>MP3 count</td><td class="mono">UInt32</td><td>Total number of MP3s in the file. Zero indicates no MP3 data.</td></tr>
 <tr><td>MP3 offset table offset</td><td class="mono">OffsetTable*</td><td>Unsigned 64-bit offset to the MP3 offset table in the file, with the number of entries equal to the MP3 count.  If count is zero, this is present but ignored.</td></tr>
+</table>
+
+<h3>Node (20 bytes)</h3>
+<p>Each node is assigned a zero-based 32-bit unsigned ID in the order nodes appear in the node block; that is, the first node (the base node) has ID 0, the second node has ID 1, and so on. This ID is used to point to child nodes in nodes.<br />
+<br />
+All nodes should be in one contiguous block, which should be of size <span class="mono">20 * Number of nodes</span>. Children nodes of each parent node must be consecutive in one contiguous block, and the ID of the first child in the block is specified in the <em>First Child ID</em> field of the parent node.</p>
+<table>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
+<tr><td>Node name</td><td class="mono">UInt32</td><td>String ID representing the name of this node</td></tr>
+<tr><td>Children count</td><td class="mono">UInt16</td><td>Zero means there are no children.</td></tr>
+<tr><td>Type</td><td class="mono">UInt16</td><td class="mono">0 = No data<br />1 = Int32<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Canvas (UInt32 ID)<br />6 = MP3 (UInt32 ID)</td></tr>
+<tr><td>Data</td><td>Varies</td><td>This field is always 8 bytes. If the data type is less than 8 bytes, only the first few bytes are used and the remaining are ignored.
+<table>
+<tr><th colspan="2">Type</th><th>Description</th></tr>
+<tr><td class="mono">0</td><td class="mono">None</td><td>This field is present but ignored.</td></tr>
+<tr><td class="mono">1</td><td class="mono">Int32</td><td>32-bit signed integer. Remaining 4 bytes ignored.</td></tr>
+<tr><td class="mono">2</td><td class="mono">Double</td><td>64-bit IEEE double-precision floating point.</td></tr>
+<tr><td class="mono">3</td><td class="mono">String</td><td>32-bit unsigned string ID. Remaining 4 bytes ignored.</td></tr>
+<tr><td class="mono">4</td><td class="mono">Vector</td><td>Two 32-bit signed integers, for X and Y respectively.</td></tr>
+<tr><td class="mono">5</td><td class="mono">Canvas</td><td>32-bit unsigned canvas ID. Remaining 4 bytes ignored. Present but ignored if bitmaps are not included in this file.</td></tr>
+<tr><td class="mono">6</td><td class="mono">MP3</td><td>32-bit unsigned MP3 ID. Remaining 4 bytes ignored. Present but ignored if MP3s are not included in this file.</td></tr>
+</table></td></tr>
+<tr><td>First Child ID</td><td class="mono">UInt32</td><td>Node ID of first child. Present but ignored if child count is zero (0).</td></tr>
 </table>
 </body>
 </html>
