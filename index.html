@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>NX (PKG3) Format Specification</title>
+<style type="text/css">
+body {
+    font-family:sans-serif;
+}
+table { 
+    border-collapse: collapse;
+}
+table, td, th {
+    border: 1px solid black;
+}
+td, th {
+    padding: 4px 5px;
+}
+th {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+}
+.mono {
+    font-family: monospace;
+}
+</style>
+</head>
+<body>
+<h1>2nd NX File Format [PKG3]</h1>
+<p>The NX file format was designed with speediness and ease of reading in mind, to speed up loading times for anything that uses a node-tree-based data file format.</p>
+
+<p>In the NX file format, the following should be followed:</p>
+
+<ul>
+<li>Signed integers use Two's complement.</li>
+<li>All multi-byte integer and and floating point types are in little endian byte order.</li>
+<li>Floating point types follow IEEE standards.</li>
+<li>Any compression should be done using LZ4.</li>
+<li>The file extension should be <strong>.nx</strong>.</li>
+</ul>
+
+<p>In the following specification, <em>Bitmap</em> is synonymous with <em>Canvas data</em>.</p>
+<h3>Recommended File Format</h3>
+<table>
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><td>Header</td><td class="mono">Header</td><td>File header</td></tr>
+<tr><td>Node data</td><td class="mono">Node[]</td><td>Node data, including all children.</td></tr>
+<tr><td>String data</td><td class="mono">String[]</td><td>String data. Contiguous block.</td></tr>
+<tr><td>Bitmap offset table</td><td class="mono">UInt64[]</td><td>Bitmap offset table. Contiguous block.</td></tr>
+<tr><td>Bitmaps</td><td class="mono">Canvas[]</td><td>Canvas data.</td></tr>
+<tr><td>MP3 offset table</td><td class="mono">UInt64[]</td><td>MP3 offset table. Contiguous block.</td></tr>
+<tr><td>MP3 data</td><td class="mono">MP3[]</td><td>MP3 data.</td></tr>
+</table>
+
+<h3>Header (52 bytes)</h3>
+<table style="margin-top: 3px;">
+<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
+<tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">“PKG3” = {0x50, 0x4B, 0x47, 0x33}</td></tr>
+<tr><td>Node count</td><td class="mono">UInt32</td><td>Total number of nodes in the file. Cannot be zero.</td></tr>
+<tr><td>Node block offset</td><td class="mono">Node*</td><td>Unsigned 64-bit offset to the start of the node block, which should be the base node: the parent of all other nodes in the file.</td></tr>
+<tr><td>String count</td><td class="mono">UInt32</td><td>Total number of string entries in the file. Cannot be zero.</td></tr>
+<tr><td>String block offset</td><td class="mono">String*</td><td>Unsigned 64-bit offset to the first string in the file, the start of the string block.</td></tr>
+<tr><td>Bitmap count</td><td class="mono">UInt32</td><td>Total number of bitmaps in the file. Zero indicates no canvas data.</td></tr>
+<tr><td>Bitmap offset table offset</td><td class="mono">OffsetTable*</td><td>Unsigned 64-bit offset to the bitmap offset table in the file, with the number of entries equal to the bitmap count. If count is zero, this is present but ignored.</td></tr>
+<tr><td>MP3 count</td><td class="mono">UInt32</td><td>Total number of MP3s in the file. Zero indicates no MP3 data.</td></tr>
+<tr><td>MP3 offset table offset</td><td class="mono">OffsetTable*</td><td>Unsigned 64-bit offset to the MP3 offset table in the file, with the number of entries equal to the MP3 count.  If count is zero, this is present but ignored.</td></tr>
+</table>
+</body>
+</html>
