@@ -40,6 +40,15 @@ th {
 <li>The file extension should be <strong>.nx</strong>.</li>
 </ul>
 
+<p>These are the reference implementations of the NX format:</p>
+
+<ul>
+<li><a href="https://github.com/NoLifeDev/NoLifeNx">NoLifeNx</a> (C++), by retep998, a library for reading NX files.</li>
+<li><a href="https://github.com/NoLifeDev/NoLifeWzToNx">NoLifeWzToNx (C++), by retep998, a tool to convert WZ files to NX.</li>
+<li><a href="https://github.com/angelsl/ms-reNX">reNX</a> (C#), by angelsl, a library for reading and writing NX files.</li>
+<li><a href="https://github.com/angelsl/ms-wz2nx">WZ2NX</a> (C#), by angelsl, a tool to convert WZ files to NX.</li>
+</ul>
+
 <p>In the following specification, <em>Bitmap</em> is synonymous with <em>Canvas data</em>.</p>
 <h3>Recommended File Format</h3>
 <table>
@@ -130,5 +139,14 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Offset Array</td><td class="mono">UInt64[]</td><td>Sequential offset array; the first offset has ID 0, the second has ID 1, and so on.</td></tr>
 </table>
+
+<p><strong>Acknowledgements:</strong></p>
+<ul>
+<li><strong><a href="https://github.com/retep998">Retep998</a></strong>, one of the two co-writers of the NX format.</li>
+<li><strong><a href="https://github.com/angelsl">angelsl</a></strong>, the other co-writer and the author of this Specification.</li>
+<li><strong><a href="https://github.com/aaronweiss74">aaronweiss74</a></strong>, for his support and for writing <a href="https://github.com/aaronweiss74/libjinx2">libjinx2</a>.</li>
+<li><strong>Cedric</strong>, for his suggestions, help and support.</li>
+<li><strong><a href="http://code.google.com/p/lz4/">LZ4</a></strong>, the compression algorithm used in NX.
+</ul>
 </body>
 </html>
