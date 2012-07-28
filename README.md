@@ -1,3 +1,3 @@
-#NX Specification
+#NX Specification [PKG4]
 
-This repository hosts the NX specification. You may wish to view it [here](http://nxformat.github.com).
+This repository hosts the NX (PKG4) specification, which is currently under development.
