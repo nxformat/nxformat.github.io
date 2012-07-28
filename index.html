@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>NX (PKG3) Format Specification</title>
+<title>NX (PKG4) Format Specification</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <style type="text/css">
 body {
@@ -27,7 +27,7 @@ th {
 </style>
 </head>
 <body>
-<h1>2nd NX File Format [PKG3]</h1>
+<h1>2nd NX File Format [PKG4]</h1>
 <p>The NX file format was designed with speediness and ease of reading in mind, to speed up loading times for anything that uses a node-tree-based data file format.</p>
 
 <p>In the NX file format, the following should be followed:</p>
@@ -66,7 +66,7 @@ th {
 <table>
 <tr><th>Name</th><th>Type</th><th>Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">"PKG3" = {0x50, 0x4B, 0x47, 0x33}</td></tr>
+<tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">"PKG4" = {0x50, 0x4B, 0x47, 0x34}</td></tr>
 <tr><td>Node count</td><td class="mono">UInt32</td><td>Total number of nodes in the file. Cannot be zero.</td></tr>
 <tr><td>Node block offset</td><td class="mono">Node*</td><td>Unsigned 64-bit offset to the start of the node block, which should be the base node: the parent of all other nodes in the file.</td></tr>
 <tr><td>String count</td><td class="mono">UInt32</td><td>Total number of string entries in the file. Cannot be zero.</td></tr>
