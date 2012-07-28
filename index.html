@@ -91,17 +91,17 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <tr><td>Node name</td><td class="mono">UInt32</td><td>String ID representing the name of this node</td></tr>
 <tr><td>First Child ID</td><td class="mono">UInt32</td><td>Node ID of first child. Present but ignored if child count is zero (0).</td></tr>
 <tr><td>Children count</td><td class="mono">UInt16</td><td>Zero means there are no children.</td></tr>
-<tr><td>Type</td><td class="mono">UInt16</td><td class="mono">0 = No data<br />1 = Int32<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Canvas (UInt32 ID)<br />6 = MP3 (UInt32 ID)</td></tr>
+<tr><td>Type</td><td class="mono">UInt16</td><td class="mono">0 = No data<br />1 = Int64<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Canvas (UInt32 ID, UInt16 Width, UInt16 Height)<br />6 = MP3 (UInt32 ID, UInt32 Length)</td></tr>
 <tr><td>Data</td><td>Varies</td><td>This field is always 8 bytes. If the data type is less than 8 bytes, only the first few bytes are used and the remaining are ignored.
 <table>
 <tr><th colspan="2">Type</th><th>Description</th></tr>
 <tr><td class="mono">0</td><td class="mono">None</td><td>This field is present but ignored.</td></tr>
-<tr><td class="mono">1</td><td class="mono">Int32</td><td>32-bit signed integer. Remaining 4 bytes ignored.</td></tr>
+<tr><td class="mono">1</td><td class="mono">Int64</td><td>64-bit signed integer.</td></tr>
 <tr><td class="mono">2</td><td class="mono">Double</td><td>64-bit IEEE double-precision floating point.</td></tr>
 <tr><td class="mono">3</td><td class="mono">String</td><td>32-bit unsigned string ID. Remaining 4 bytes ignored.</td></tr>
 <tr><td class="mono">4</td><td class="mono">Vector</td><td>Two 32-bit signed integers, for X and Y respectively.</td></tr>
-<tr><td class="mono">5</td><td class="mono">Canvas</td><td>32-bit unsigned canvas ID. Remaining 4 bytes ignored. Present but ignored if bitmaps are not included in this file.</td></tr>
-<tr><td class="mono">6</td><td class="mono">MP3</td><td>32-bit unsigned MP3 ID. Remaining 4 bytes ignored. Present but ignored if MP3s are not included in this file.</td></tr>
+<tr><td class="mono">5</td><td class="mono">Canvas</td><td>32-bit unsigned canvas ID, followed by 16-bit unsigned width and height in that order. Present but ignored if bitmaps are not included in this file.</td></tr>
+<tr><td class="mono">6</td><td class="mono">MP3</td><td>32-bit unsigned MP3 ID, followed by 32-bit unsigned data length. Present but ignored if MP3s are not included in this file.</td></tr>
 </table></td></tr>
 </table>
 
@@ -119,9 +119,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <table>
 <tr><th>Name</th><th>Type</th><th>Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Width</td><td class="mono">UInt16</td><td>Width, in pixels, of the image</td></tr>
-<tr><td>Height</td><td class="mono">UInt16</td><td>Height, in pixels, of the image</td></tr>
-<tr><td>Length</td><td class="mono">UInt32</td><td>Length, in bytes, of the image data. Uncompressed length is <span class="mono">width * height * 4</span></td></tr>
+<tr><td>Length</td><td class="mono">UInt32</td><td>Length, in bytes, of the image data. Uncompressed length is <span class="mono">width * height * 4</span>. Width and height are specified in the NX node's data field after the Canvas ID.</td></tr>
 <tr><td>Data</td><td class="mono">UInt8[]</td><td>Image data, stored in BGRA8888 format, that is, 1 byte each for the blue, green, red and alpha components, in that order. This data is compressed with LZ4. This byte array is <span class="mono">Length</span> bytes long.</td></tr>
 </table>
 
@@ -130,8 +128,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <table>
 <tr><th>Name</th><th>Type</th><th>Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Length</td><td class="mono">UInt32</td><td>Length, in bytes, of the MP3 data.</td></tr>
-<tr><td>MP3 data</td><td class="mono">UInt8[]</td><td>MP3 data. This byte array is <span class="mono">Length</span> bytes long.</td></tr>
+<tr><td>MP3 data</td><td class="mono">UInt8[]</td><td>MP3 data. This byte array is <span class="mono">Length</span> bytes long. Length is specified in the NX node's data field after the MP3 ID.</td></tr>
 </table>
 
 <h3>Offset Table</h3>
