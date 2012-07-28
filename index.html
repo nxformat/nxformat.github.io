@@ -82,6 +82,8 @@ th {
 <br />
 All nodes should be in one contiguous block, which should be of size <span class="mono">20 * Number of nodes</span>. Children nodes of each parent node must be consecutive in one contiguous block, and the ID of the first child in the block is specified in the <em>First Child ID</em> field of the parent node.
 
+Children nodes of each parent node must be sorted in ascending order according to the UTF-8 value of the node name of each child..
+
 The base node should have an ID of 0, and <em>preferably</em> have type 0 (None).</p>
 <table>
 <tr><th>Name</th><th>Type</th><th>Description</th></tr>
