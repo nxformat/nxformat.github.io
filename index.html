@@ -38,6 +38,7 @@ th {
 <li>Floating point types follow IEEE standards.</li>
 <li>Any compression should be done using LZ4.</li>
 <li>The file extension should be <strong>.nx</strong>.</li>
+<li>All offsets within the file should be a multiple of 8.</li>
 </ul>
 
 <p>These are the reference implementations of the NX format:</p>
@@ -69,13 +70,13 @@ th {
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">"PKG4" = {0x50, 0x4B, 0x47, 0x34}</td></tr>
 <tr><td>Node count</td><td class="mono">UInt32</td><td>Total number of nodes in the file. Cannot be zero.</td></tr>
-<tr><td>Node block offset</td><td class="mono">Node*</td><td>Unsigned 64-bit offset to the start of the node block, which should be the base node: the parent of all other nodes in the file.</td></tr>
+<tr><td>Node block offset</td><td class="mono">Node*</td><td>Unsigned 64-bit offset to the start of the node block, which should be the base node: the parent of all other nodes in the file. This must be a multiple of 8.</td></tr>
 <tr><td>String count</td><td class="mono">UInt32</td><td>Total number of string entries in the file. Cannot be zero.</td></tr>
-<tr><td>String offset table offset</td><td class="mono">String*</td><td>Unsigned 64-bit offset to the string offset table in the file, with the number of entries equal to the string count.</td></tr>
+<tr><td>String offset table offset</td><td class="mono">String*</td><td>Unsigned 64-bit offset to the string offset table in the file, with the number of entries equal to the string count. This must be a multiple of 8.</td></tr>
 <tr><td>Bitmap count</td><td class="mono">UInt32</td><td>Total number of bitmaps in the file. Zero indicates no canvas data.</td></tr>
-<tr><td>Bitmap offset table offset</td><td class="mono">OffsetTable*</td><td>Unsigned 64-bit offset to the bitmap offset table in the file, with the number of entries equal to the bitmap count. If count is zero, this is present but ignored.</td></tr>
+<tr><td>Bitmap offset table offset</td><td class="mono">OffsetTable*</td><td>Unsigned 64-bit offset to the bitmap offset table in the file, with the number of entries equal to the bitmap count. This must be a multiple of 8. If count is zero, this is present but ignored.</td></tr>
 <tr><td>MP3 count</td><td class="mono">UInt32</td><td>Total number of MP3s in the file. Zero indicates no MP3 data.</td></tr>
-<tr><td>MP3 offset table offset</td><td class="mono">OffsetTable*</td><td>Unsigned 64-bit offset to the MP3 offset table in the file, with the number of entries equal to the MP3 count.  If count is zero, this is present but ignored.</td></tr>
+<tr><td>MP3 offset table offset</td><td class="mono">OffsetTable*</td><td>Unsigned 64-bit offset to the MP3 offset table in the file, with the number of entries equal to the MP3 count. This must be a multiple of 8. If count is zero, this is present but ignored.</td></tr>
 </table>
 
 <h3>Node (20 bytes)</h3>
@@ -133,7 +134,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 </table>
 
 <h3>Offset Table</h3>
-<p>Offset arrays are used to refer to Bitmaps and MP3s.</p>
+<p>Offset arrays are used to refer to Bitmaps and MP3s. All offsets must be a multiple of 8.</p>
 <table>
 <tr><th>Name</th><th>Type</th><th>Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
