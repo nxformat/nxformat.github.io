@@ -89,6 +89,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <tr><th>Name</th><th>Type</th><th>Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Node name</td><td class="mono">UInt32</td><td>String ID representing the name of this node</td></tr>
+<tr><td>First Child ID</td><td class="mono">UInt32</td><td>Node ID of first child. Present but ignored if child count is zero (0).</td></tr>
 <tr><td>Children count</td><td class="mono">UInt16</td><td>Zero means there are no children.</td></tr>
 <tr><td>Type</td><td class="mono">UInt16</td><td class="mono">0 = No data<br />1 = Int32<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Canvas (UInt32 ID)<br />6 = MP3 (UInt32 ID)</td></tr>
 <tr><td>Data</td><td>Varies</td><td>This field is always 8 bytes. If the data type is less than 8 bytes, only the first few bytes are used and the remaining are ignored.
@@ -102,7 +103,6 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <tr><td class="mono">5</td><td class="mono">Canvas</td><td>32-bit unsigned canvas ID. Remaining 4 bytes ignored. Present but ignored if bitmaps are not included in this file.</td></tr>
 <tr><td class="mono">6</td><td class="mono">MP3</td><td>32-bit unsigned MP3 ID. Remaining 4 bytes ignored. Present but ignored if MP3s are not included in this file.</td></tr>
 </table></td></tr>
-<tr><td>First Child ID</td><td class="mono">UInt32</td><td>Node ID of first child. Present but ignored if child count is zero (0).</td></tr>
 </table>
 
 <h3>String (2-65537 bytes)</h3>
