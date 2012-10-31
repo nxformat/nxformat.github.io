@@ -36,7 +36,7 @@ th {
 <li>Signed integers use Two's complement.</li>
 <li>All multi-byte integer and and floating point types are in little endian byte order.</li>
 <li>Floating point types follow IEEE standards.</li>
-<li>Any compression should be done using LZ4.</li>
+<li>Bitmap compression should be done using LZ4.</li>
 <li>The file extension should be <strong>.nx</strong>.</li>
 </ul>
 
@@ -120,8 +120,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <table>
 <tr><th>Name</th><th>Type</th><th>Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Length</td><td class="mono">UInt32</td><td>Length, in bytes, of the image data. Uncompressed length is <span class="mono">width * height * 4</span>. Width and height are specified in the NX node's data field after the Canvas ID.</td></tr>
-<tr><td>Data</td><td class="mono">UInt8[]</td><td>Image data, stored in BGRA8888 format, that is, 1 byte each for the blue, green, red and alpha components, in that order. This data is compressed with LZ4. This byte array is <span class="mono">Length</span> bytes long.</td></tr>
+<tr><td>Data</td><td class="mono">UInt8[]</td><td>Image data, stored in BGRA8888 format, that is, 1 byte each for the blue, green, red and alpha components, in that order. This data is compressed with LZ4. Uncompressed length is <span class="mono">width * height * 4</span>. Width and height are specified in the NX node's data field after the Canvas ID.</td></tr>
 </table>
 
 <h3>MP3 (4-4294967299 bytes)</h3>
