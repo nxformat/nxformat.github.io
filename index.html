@@ -87,14 +87,14 @@ Children nodes of each parent node must be sorted in ascending order according t
 
 The base node should have an ID of 0, and <em>preferably</em> have type 0 (None).</p>
 <table>
-<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><th>Name</th><th>Type</th><th colspan="3">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Node name</td><td class="mono">UInt32</td><td>String ID representing the name of this node</td></tr>
-<tr><td>First Child ID</td><td class="mono">UInt32</td><td>Node ID of first child. Present but ignored if child count is zero (0).</td></tr>
-<tr><td>Children count</td><td class="mono">UInt16</td><td>Zero means there are no children.</td></tr>
-<tr><td>Type</td><td class="mono">UInt16</td><td class="mono">0 = No data<br />1 = Int64<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Canvas (UInt32 ID, UInt16 Width, UInt16 Height)<br />6 = MP3 (UInt32 ID, UInt32 Length)</td></tr>
-<tr><td>Data</td><td>Varies</td><td>This field is always 8 bytes. If the data type is less than 8 bytes, only the first few bytes are used and the remaining are ignored.
-<table>
+<tr><td>Node name</td><td class="mono">UInt32</td><td colspan="3">String ID representing the name of this node</td></tr>
+<tr><td>First Child ID</td><td class="mono">UInt32</td><td colspan="3">Node ID of first child. Present but ignored if child count is zero (0).</td></tr>
+<tr><td>Children count</td><td class="mono">UInt16</td><td colspan="3">Zero means there are no children.</td></tr>
+<tr><td>Type</td><td class="mono">UInt16</td><td class="mono" colspan="3">0 = No data<br />1 = Int64<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Canvas (UInt32 ID, UInt16 Width, UInt16 Height)<br />6 = MP3 (UInt32 ID, UInt32 Length)</td></tr>
+<tr><td rowspan="9">Data</td><td rowspan="9">Varies</td><td colspan="3">This field is always 8 bytes. If the data type is less than 8 bytes, only the first few bytes are used and the remaining are ignored.
+
 <tr><th colspan="2">Type</th><th>Description</th></tr>
 <tr><td class="mono">0</td><td class="mono">None</td><td>This field is present but ignored.</td></tr>
 <tr><td class="mono">1</td><td class="mono">Int64</td><td>64-bit signed integer.</td></tr>
@@ -103,7 +103,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <tr><td class="mono">4</td><td class="mono">Vector</td><td>Two 32-bit signed integers, for X and Y respectively.</td></tr>
 <tr><td class="mono">5</td><td class="mono">Canvas</td><td>32-bit unsigned canvas ID, followed by 16-bit unsigned width and height in that order. Present but ignored if bitmaps are not included in this file.</td></tr>
 <tr><td class="mono">6</td><td class="mono">MP3</td><td>32-bit unsigned MP3 ID, followed by 32-bit unsigned data length. Present but ignored if MP3s are not included in this file.</td></tr>
-</table></td></tr>
+</td></tr>
 </table>
 
 <h3>String (2-65537 bytes)</h3>
@@ -115,7 +115,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <tr><td>String data</td><td class="mono">UInt8[]</td><td>String data, encoded in UTF-8. This byte array is <span class="mono">Length</span> bytes long.</td></tr>
 </table>
 
-<h3>Bitmap (8-4294967303 bytes)</h3>
+<h3>Bitmap (4-4294967299 bytes)</h3>
 <p>Each bitmap is assigned a zero-based unsigned 32-bit ID. Offsets to bitmaps are located in the Bitmap offset table. Bitmaps do not need to be in a contiguous block, though this is recommended.</p>
 <table>
 <tr><th>Name</th><th>Type</th><th>Description</th></tr>
@@ -124,7 +124,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <tr><td>Data</td><td class="mono">UInt8[]</td><td>Image data, stored in BGRA8888 format, that is, 1 byte each for the blue, green, red and alpha components, in that order. This data is compressed with LZ4. This byte array is <span class="mono">Length</span> bytes long.</td></tr>
 </table>
 
-<h3>MP3 (4-4294967299 bytes)</h3>
+<h3>MP3 (0-4294967295 bytes)</h3>
 <p>Each MP3 is assigned a zero-based unsigned 32-bit ID. Offsets to MP3s are located in the MP3 offset table. MP3s do not need to be a contiguous block, though this is recommended.</p>
 <table>
 <tr><th>Name</th><th>Type</th><th>Description</th></tr>
