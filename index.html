@@ -44,6 +44,7 @@ th.type {
 <p>In the NX file format, the following should be followed:</p>
 
 <ul>
+<li>All offsets are unsigned 64-bit integers, zero-based, and are from the beginning of the file.</li>
 <li>Signed integers use Two's complement.</li>
 <li>All multi-byte integer and and floating point types are in little endian byte order.</li>
 <li>Floating point types follow IEEE standards.</li>
@@ -60,7 +61,6 @@ th.type {
 <li><a href="https://github.com/angelsl/ms-wz2nx">WZ2NX</a> (C#), by angelsl, a tool to convert WZ files to NX.</li>
 </ul>
 
-<p>In the following specification, <em>Bitmap</em> is synonymous with <em>Canvas data</em>.</p>
 <h3>Recommended File Format</h3>
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
@@ -69,7 +69,7 @@ th.type {
 <tr><td>String offset table</td><td class="mono">UInt64[]</td><td>String offset table. Contiguous block.</td></tr>
 <tr><td>String data</td><td class="mono">String[]</td><td>String data.</td></tr>
 <tr><td>Bitmap offset table</td><td class="mono">UInt64[]</td><td>Bitmap offset table. Contiguous block.</td></tr>
-<tr><td>Bitmaps</td><td class="mono">Canvas[]</td><td>Canvas data.</td></tr>
+<tr><td>Bitmaps</td><td class="mono">Bitmap[]</td><td>Bitmap data.</td></tr>
 <tr><td>MP3 offset table</td><td class="mono">UInt64[]</td><td>MP3 offset table. Contiguous block.</td></tr>
 <tr><td>MP3 data</td><td class="mono">MP3[]</td><td>MP3 data.</td></tr>
 </table>
@@ -80,63 +80,63 @@ th.type {
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">"PKG4" = {0x50, 0x4B, 0x47, 0x34}</td></tr>
 <tr><td>Node count</td><td class="mono">UInt32</td><td>Total number of nodes in the file. Cannot be zero.</td></tr>
-<tr><td>Node block offset</td><td class="mono">Node*</td><td>Unsigned 64-bit offset to the start of the node block, which should be the base node: the parent of all other nodes in the file. This must be a multiple of 4.</td></tr>
-<tr><td>String count</td><td class="mono">UInt32</td><td>Total number of string entries in the file. Cannot be zero.</td></tr>
-<tr><td>String offset table offset</td><td class="mono">String*</td><td>Unsigned 64-bit offset to the string offset table in the file, with the number of entries equal to the string count. This must be a multiple of 8.</td></tr>
-<tr><td>Bitmap count</td><td class="mono">UInt32</td><td>Total number of bitmaps in the file. Zero indicates no canvas data.</td></tr>
-<tr><td>Bitmap offset table offset</td><td class="mono">OffsetTable*</td><td>Unsigned 64-bit offset to the bitmap offset table in the file, with the number of entries equal to the bitmap count. This must be a multiple of 8. If count is zero, this is present but ignored.</td></tr>
-<tr><td>MP3 count</td><td class="mono">UInt32</td><td>Total number of MP3s in the file. Zero indicates no MP3 data.</td></tr>
-<tr><td>MP3 offset table offset</td><td class="mono">OffsetTable*</td><td>Unsigned 64-bit offset to the MP3 offset table in the file, with the number of entries equal to the MP3 count. This must be a multiple of 8. If count is zero, this is present but ignored.</td></tr>
+<tr><td>Node block offset</td><td class="mono">Node*</td><td>Offset to the start of the node block, which should be the base node: the parent of all other nodes in the file. This must be a multiple of 4.</td></tr>
+<tr><td>String count</td><td class="mono">UInt32</td><td>Total number of <code>String</code> entries in the file. Cannot be zero.</td></tr>
+<tr><td>String offset table offset</td><td class="mono">OffsetTable*</td><td>Offset to the string offset table in the file, with the number of entries equal to the <code>String</code> count. This must be a multiple of 8.</td></tr>
+<tr><td>Bitmap count</td><td class="mono">UInt32</td><td>Total number of <code>Bitmap</code> entries in the file. Zero indicates no bitmap data.</td></tr>
+<tr><td>Bitmap offset table offset</td><td class="mono">OffsetTable*</td><td>Offset to the bitmap offset table in the file, with the number of entries equal to <code>Bitmap count</code>. This must be a multiple of 8. Ignored if <code>Bitmap count</code> is <code>0</code>.</td></tr>
+<tr><td>MP3 count</td><td class="mono">UInt32</td><td>Total number of <code>MP3</code> entries in the file. Zero indicates no MP3 data.</td></tr>
+<tr><td>MP3 offset table offset</td><td class="mono">OffsetTable*</td><td>Offset to the MP3 offset table in the file, with the number of entries equal to <code>MP3 count</code>. This must be a multiple of 8. Ignored if <code>MP3 count</code> is <code>0</code>.</td></tr>
 </table>
 
 <h3>Node (20 bytes)</h3>
-<p>Each node is assigned a zero-based 32-bit unsigned ID in the order nodes appear in the node block; that is, the first node (the base node) has ID 0, the second node has ID 1, and so on. This ID is used to point to child nodes in nodes.<br />
+<p>Each <code>Node</code> is assigned a zero-based 32-bit unsigned ID in the order they appear in the node block; that is, the first <code>Node</code> (the base node) has ID 0, the second node has ID 1, and so on. This ID is used to point to child nodes of <code>Node</code>s.<br />
 <br />
-All nodes should be in one contiguous block, which should be of size <code>20 * Number of nodes</code>. Children nodes of each parent node must be consecutive in one contiguous block, and the ID of the first child in the block is specified in the <em>First Child ID</em> field of the parent node.
-
-Children nodes of each parent node must be sorted in ascending order according to the UTF-8 value of the node name of each child.
-
+All <code>Node</code>s should be in one contiguous block, which should be of size <code>24 * Number of nodes</code>. <code>Node</code>s must be aligned to an 8-byte boundary.<br />
+<br />
+Children <code>Node</code>s of each parent <code>Node</code> must be consecutive in one contiguous block, and the ID of the first child in the block is specified in the <code>First Child ID</code> field of the parent <code>Node</code>. Children <code>Node</code>s of each parent <code>Node</code> must be sorted in ascending order according to the UTF-8 value of the node name of each child.<br />
+<br />
 The base node should have an ID of 0, and <em>preferably</em> have type 0 (None).</p>
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th colspan="3" class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Node name</td><td class="mono">UInt32</td><td colspan="3">String ID representing the name of this node</td></tr>
+<tr><td>Node name</td><td class="mono">UInt32</td><td colspan="3"><code>String</code> ID representing the name of this node</td></tr>
 <tr><td>First Child ID</td><td class="mono">UInt32</td><td colspan="3">Node ID of first child. Present but ignored if child count is zero (0).</td></tr>
 <tr><td>Children count</td><td class="mono">UInt16</td><td colspan="3">Zero means there are no children.</td></tr>
-<tr><td>Type</td><td class="mono">UInt16</td><td class="mono" colspan="3">0 = No data<br />1 = Int64<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Canvas (UInt32 ID, UInt16 Width, UInt16 Height)<br />6 = MP3 (UInt32 ID, UInt32 Length)</td></tr>
-<tr><td rowspan="9">Data</td><td rowspan="9">Varies</td><td colspan="3">This field is always 8 bytes. If the data type is less than 8 bytes, only the first few bytes are used and the remaining are ignored.
+<tr><td>Type</td><td class="mono">UInt16</td><td class="mono" colspan="3">0 = No data<br />1 = Int64<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Bitmap (UInt32 ID, UInt16 Width, UInt16 Height)<br />6 = MP3 (UInt32 ID, UInt32 Length)</td></tr>
+<tr><td rowspan="9">Data</td><td rowspan="9">Varies</td><td colspan="3">This field is always 8 bytes.
 
 <tr><th colspan="2">Type</th><th>Description</th></tr>
-<tr><td class="mono">0</td><td class="mono">None</td><td>This field is present but ignored.</td></tr>
+<tr><td class="mono">0</td><td class="mono">None</td><td>This field is ignored.</td></tr>
 <tr><td class="mono">1</td><td class="mono">Int64</td><td>64-bit signed integer.</td></tr>
 <tr><td class="mono">2</td><td class="mono">Double</td><td>64-bit IEEE double-precision floating point.</td></tr>
-<tr><td class="mono">3</td><td class="mono">String</td><td>32-bit unsigned string ID. Remaining 4 bytes ignored.</td></tr>
-<tr><td class="mono">4</td><td class="mono">Vector</td><td>Two 32-bit signed integers, for X and Y respectively.</td></tr>
-<tr><td class="mono">5</td><td class="mono">Canvas</td><td>32-bit unsigned canvas ID, followed by 16-bit unsigned width and height in that order. Present but ignored if bitmaps are not included in this file.</td></tr>
-<tr><td class="mono">6</td><td class="mono">MP3</td><td>32-bit unsigned MP3 ID, followed by 32-bit unsigned data length. Present but ignored if MP3s are not included in this file.</td></tr>
+<tr><td class="mono">3</td><td class="mono">String</td><td>32-bit unsigned string ID.</td></tr>
+<tr><td class="mono">4</td><td class="mono">Vector</td><td>Two 32-bit signed integers (<code>Int32</code>), for X and Y respectively.</td></tr>
+<tr><td class="mono">5</td><td class="mono">Bitmap</td><td>32-bit unsigned bitmap ID, followed by 16-bit unsigned width and height in that order. Ignored if <code>Bitmap count</code> in <code>Header</code> is <code>0</code>.</td></tr>
+<tr><td class="mono">6</td><td class="mono">MP3</td><td>32-bit unsigned MP3 ID, followed by 32-bit unsigned data length. Ignored if <code>MP3 count</code> in <code>Header</code> is <code>0</code>.</td></tr>
 </td></tr>
 </table>
 
 <h3>String (2-65537 bytes)</h3>
-<p>Each string is assigned a zero-based unsigned 32-bit ID. Offsets to strings are located in the String offset table. Strings do not need to be in a contiguous block, though this is recommended.</p>
+<p>Each <code>String</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>String</code>s are located in the String offset table. <code>String</code>s do not need to be in a contiguous block, though this is recommended. <code>String</code>s must be aligned to a 2-byte boundary.</p>
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Length</td><td class="mono">UInt16</td><td>Length in bytes of the following string</td></tr>
+<tr><td>Length</td><td class="mono">UInt16</td><td>Length, in bytes, of the following string data</td></tr>
 <tr><td>String data</td><td class="mono">UInt8[]</td><td>String data, encoded in UTF-8. This byte array is <code>Length</code> bytes long.</td></tr>
 </table>
 
 <h3>Bitmap (4-4294967299 bytes)</h3>
-<p>Each bitmap is assigned a zero-based unsigned 32-bit ID. Offsets to bitmaps are located in the Bitmap offset table. Bitmaps do not need to be in a contiguous block, though this is recommended.</p>
+<p>Each <code>Bitmap</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>Bitmap</code>s are located in the bitmap offset table. <code>Bitmap</code>s do not need to be in a contiguous block, though this is recommended.</p>
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Length</td><td class="mono">UInt32</td><td>Length, in bytes, of the image data. Uncompressed length is <code>width * height * 4</code>. Width and height are specified in the NX node's data field after the Canvas ID.</td></tr>
-<tr><td>Data</td><td class="mono">UInt8[]</td><td>Image data, stored in BGRA8888 format, that is, 1 byte each for the blue, green, red and alpha components, in that order. This data is compressed with LZ4. This byte array is <code>Length</code> bytes long.</td></tr>
+<tr><td>Length</td><td class="mono">UInt32</td><td>Length, in bytes, of the image data. Uncompressed length is <code>Width * Height * 4</code>. <code>Width</code> and <code>Height</code> are specified in the <code>Node</code>'s <code>Data</code> field after the bitmap ID.</td></tr>
+<tr><td>Bitmap data</td><td class="mono">UInt8[]</td><td>Bitmap data, stored in BGRA8888 format, that is, 1 byte each for the blue, green, red and alpha components, in that order. This data is compressed with LZ4. This byte array is <code>Length</code> bytes long.</td></tr>
 </table>
 
 <h3>MP3 (0-4294967295 bytes)</h3>
-<p>Each MP3 is assigned a zero-based unsigned 32-bit ID. Offsets to MP3s are located in the MP3 offset table. MP3s do not need to be a contiguous block, though this is recommended.</p>
+<p>Each <code>MP3</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>MP3</code>s are located in the MP3 offset table. <code>MP3</code>s do not need to be a contiguous block, though this is recommended.</p>
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
@@ -144,7 +144,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 </table>
 
 <h3>Offset Table</h3>
-<p>Offset arrays are used to refer to Strings, Bitmaps and MP3s. String offsets must be a multiple of 2. Bitmap and MP3 offsets must be a multiple of 8.</p>
+<p>Offset tables are used to refer to <code>String</code>s, <code>Bitmap</code>s and <code>MP3</code>s. String offsets must be a multiple of 2. Bitmap and MP3 offsets must be a multiple of 8.</p>
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
