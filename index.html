@@ -131,7 +131,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <h3>Compressed Byte Array (24-4294967319 bytes)</h3>
 <p>Each <code>Compressed Byte Array</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>Compressed Byte Array</code>s are located in the uncompressed byte array offset table. Byte arrays do not need to be in a contiguous block, though this is recommended. Byte arrays must be aligned to an 8-byte boundary.</p>
 <table>
-<tr><th>Name</th><th>Type</th><th>Description</th></tr>
+<tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Length</td><td class="mono">UInt64</td><td>Length, in bytes, of the compressed byte array.</td></tr>
 <tr><td>Uncompressed length</td><td class="mono">UInt64</td><td>Length, in bytes, of the byte array.</td></tr>
@@ -170,7 +170,7 @@ If bitmap data is omitted in an NX file, the <code>Node</code>s containing a bit
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Width</td><td class="mono">UInt32</td><td>Width of the following image.</td></tr>
 <tr><td>Height</td><td class="mono">UInt32</td><td>Height of the following image.</td></tr>
-<tr><td>Data</td><td class="mono">UInt8[]</td><td>Bitmap data, stored in BGRA8888 format, that is, 1 byte each for the blue, green, red and alpha components, in that order. This byte array is <code>Width * Height * 4</code> bytes long.</td></tr>
+<tr><td>Data</td><td class="mono">UInt8[]</td><td>Bitmap data, stored in BGRA8888 format, that is, 1 byte each for blue, green, red and alpha, in that order. This byte array is <code>Width * Height * 4</code> bytes long.</td></tr>
 </table>
 
 <h3>Audio</h3>
