@@ -92,7 +92,7 @@ th.type {
 <h3>Node (20 bytes)</h3>
 <p>Each <code>Node</code> is assigned a zero-based 32-bit unsigned ID in the order they appear in the node block; that is, the first <code>Node</code> (the base node) has ID 0, the second node has ID 1, and so on. This ID is used to point to child nodes of <code>Node</code>s.<br />
 <br />
-All <code>Node</code>s should be in one contiguous block, which should be of size <code>24 * Number of nodes</code>. <code>Node</code>s must be aligned to an 8-byte boundary.<br />
+All <code>Node</code>s should be in one contiguous block, which should be of size <code>20 * Number of nodes</code>. <code>Node</code>s must be aligned to an 8-byte boundary.<br />
 <br />
 Children <code>Node</code>s of each parent <code>Node</code> must be consecutive in one contiguous block, and the ID of the first child in the block is specified in the <code>First Child ID</code> field of the parent <code>Node</code>. Children <code>Node</code>s of each parent <code>Node</code> must be sorted in ascending order according to the UTF-8 value of the node name of each child.<br />
 <br />
