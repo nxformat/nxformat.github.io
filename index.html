@@ -4,10 +4,11 @@
 <title>NX (PKG5) Format Specification</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <style type="text/css">
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700|Inconsolata);
 body {
-    font-family:sans-serif;
+    font-family: 'Source Sans Pro', sans-serif;
     margin: 0 auto;
-    width: 85%;
+    max-width: 800px;
 }
 table { 
     border-collapse: collapse;
@@ -32,8 +33,8 @@ th.type {
     width:8.5%;
     min-width:6.7em;
 }
-.mono {
-    font-family: monospace;
+.mono, code {
+    font-family: 'Inconsolata', 'Consolas', monospace;
 }
 </style>
 </head>
@@ -118,7 +119,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 </td></tr>
 </table>
 
-<h3>String (2-65537 bytes)</h3>
+<h3>String (2&ndash;65537 bytes)</h3>
 <p>Each <code>String</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>String</code>s are located in the String offset table. <code>String</code>s do not need to be in a contiguous block, though this is recommended. <code>String</code>s must be aligned to a 2-byte boundary.</p>
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
@@ -128,7 +129,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <tr><td>Null</td><td class="mono">UInt8</td><td class="mono">'\0' = {0x00}</td>
 </table>
 
-<h3>Compressed Byte Array (24-4294967319 bytes)</h3>
+<h3>Compressed Byte Array (24&ndash;4294967319 bytes)</h3>
 <p>Each <code>Compressed Byte Array</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>Compressed Byte Array</code>s are located in the uncompressed byte array offset table. Byte arrays do not need to be in a contiguous block, though this is recommended. Byte arrays must be aligned to an 8-byte boundary.</p>
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
@@ -139,7 +140,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <tr><td>Data</td><td class="mono">UInt8[]</td><td>Data, compressed using LZ4. This byte array is <code>Length</code> bytes long.</td></tr>
 </table>
 
-<h3>Uncompressed Byte Array (16-4294967311 bytes)</h3>
+<h3>Uncompressed Byte Array (16&ndash;4294967311 bytes)</h3>
 <p>Each <code>Uncompressed Byte Array</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>Uncompressed Byte Array</code>s are located in the uncompressed byte array offset table. Byte arrays do not need to be in a contiguous block, though this is recommended. Byte arrays must be aligned to an 8-byte boundary.</p>
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
