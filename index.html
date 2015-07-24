@@ -105,7 +105,7 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <tr><td>Node name</td><td class="mono">UInt32</td><td colspan="3"><code>String</code> ID representing the name of this node</td></tr>
 <tr><td>First Child ID</td><td class="mono">UInt32</td><td colspan="3">Node ID of first child. Present but ignored if child count is zero (0).</td></tr>
 <tr><td>Children count</td><td class="mono">UInt16</td><td colspan="3">Zero means there are no children.</td></tr>
-<tr><td>Type</td><td class="mono">UInt16</td><td class="mono" colspan="3">0 = No data<br />1 = Int64<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Compressed Byte Array (UInt32 ID)<br />6 = Uncompressed Byte Array (UInt32 ID)</td></tr>
+<tr><td>Type</td><td class="mono">UInt16</td><td colspan="3"><code>0 = No data<br />1 = Int64<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Compressed Byte Array (UInt32 ID)<br />6 = Uncompressed Byte Array (UInt32 ID)</code><br \><br \>Parsers should ignore types they do not recognise.</td></tr>
 <tr><td rowspan="9">Data</td><td rowspan="9">Varies</td><td colspan="3">This field is always 8 bytes.
 
 <tr><th colspan="2">Type</th><th>Description</th></tr>
