@@ -15,6 +15,7 @@ body {
 table { 
     border-collapse: collapse;
     width: 100%;
+    margin-bottom: 6pt;
 }
 table, td, th {
     border: 1px solid black;
@@ -179,14 +180,24 @@ h1, h2, h3, h4, h5, h6 {
 </table>
 
 <h3>Audio</h3>
-<p>The first 8 bytes of the <code>Metadata</code> field of the byte array containing audio should be set to <code>"WZAUDIO\0" = {0x57, 0x5A, 0x41, 0x55, 0x44, 0x49, 0x4F, 0x00}</code>.</p>
+<p>The 16-byte <code>Metadata</code> field of the byte array containing audio should have the following format.</p>
+
+<table>
+<tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
+<!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
+<tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">"WZAU" = {0x57, 0x5A, 0x41, 0x55}</td></tr>
+<tr><td>Duration</td><td class="mono">UInt32</td><td>Audio duration, in milliseconds.</td></tr>
+<tr><td>Null</td><td class="mono">UInt8[8]</td><td>{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}</td></tr>
+</table>
 
 <p>If audio data is omitted in an NX file, the <code>Node</code>s containing audio should point to an empty byte array. Otherwise, the structure of the data within the byte array is as follows.</p>
 
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Audio data</td><td class="mono">UInt8[]</td><td>Audio data, including the 82-byte WZ audio header. This byte array is <code>Length</code> bytes long. Length is specified in the <code>Byte Array</code> structure.</td></tr>
+<tr><td>Header length</td><td class="mono">UInt16</td><td>Length of the header.</td></tr>
+<tr><td>Header</td><td class="mono"><a href="https://msdn.microsoft.com/en-us/library/dd757713.aspx">WAVEFORMATEX</a></td><td>Format header. This structure is <code>Header length</code> bytes long.</td></tr>
+<tr><td>Audio data</td><td class="mono">UInt8[]</td><td>Audio data. This byte array is <code>Length</code> bytes long. Length is specified in the <code>Byte Array</code> structure.</td></tr>
 </table>
 
 <h4>Acknowledgements</h4>
