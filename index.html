@@ -166,10 +166,12 @@ h1, h2, h3, h4, h5, h6 {
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">"WZBM" = {0x57, 0x5A, 0x42, 0x4D}</td></tr>
-<tr><td>Format</td><td class="mono">UInt32</td><td>Format of the image.</td></tr>
+<tr><td>Format</td><td class="mono">UInt32</td><td>Format of the image. <br /><code>0 = 32 bpp ARGB</code></td></tr>
 <tr><td>Width</td><td class="mono">UInt32</td><td>Width of the image.</td></tr>
 <tr><td>Height</td><td class="mono">UInt32</td><td>Height of the image.</td></tr>
 </table>
+
+<p>Note that since NX is a little-endian format, e.g. ARGB is actually stored as BGRA &mdash; it is treated as a 32-bit field, and not four octets.</p>
 
 <p>If bitmap data is omitted in an NX file, the <code>Node</code>s containing a bitmap should point to an empty byte array. Otherwise, the structure of the data within the byte array is as follows.</p>
 
