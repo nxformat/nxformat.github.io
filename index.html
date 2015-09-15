@@ -197,7 +197,7 @@ h1, h2, h3, h4, h5, h6 {
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Header length</td><td class="mono">UInt16</td><td>Length of the header.</td></tr>
 <tr><td>Header</td><td class="mono"><a href="https://msdn.microsoft.com/en-us/library/dd757713.aspx">WAVEFORMATEX</a></td><td>Format header. This structure is <code>Header length</code> bytes long.</td></tr>
-<tr><td>Audio data</td><td class="mono">UInt8[]</td><td>Audio data. This byte array is <code>Length</code> bytes long. Length is specified in the <code>Byte Array</code> structure.</td></tr>
+<tr><td>Audio data</td><td class="mono">UInt8[]</td><td>Audio data. This byte array is <code>Length - Header length</code> bytes long. <code>Length</code> is specified in the <code>Byte Array</code> structure.</td></tr>
 </table>
 
 <h4>Acknowledgements</h4>
