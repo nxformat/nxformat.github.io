@@ -53,13 +53,13 @@ h1, h2, h3, h4, h5, h6 {
 <h1>4th NX File Format [PKG5]</h1>
 <p>The NX file format was designed with speediness and ease of reading in mind, to speed up loading times for anything that uses a node-tree-based data file format.</p>
 
-<p>In the NX file format, the following should be followed:</p>
+<p>In the NX file format, the following must be followed:</p>
 <ul>
 <li>All offsets are unsigned 64-bit integers, zero-based, and are from the beginning of the file.</li>
-<li>Signed integers use Two's complement.</li>
+<li>Signed integers use two's complement.</li>
 <li>All multi-byte integer and and floating point types are in little endian byte order.</li>
 <li>Floating point types follow IEEE standards.</li>
-<li>The file extension should be <strong>.nx</strong>.</li>
+<li>The file extension is <strong>.nx</strong>.</li>
 </ul>
 
 <p>These are the reference implementations of the NX format:</p>
@@ -87,7 +87,7 @@ h1, h2, h3, h4, h5, h6 {
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">"PKG5" = {0x50, 0x4B, 0x47, 0x35}</td></tr>
 <tr><td>Node count</td><td class="mono">UInt32</td><td>Total number of nodes in the file. Cannot be zero.</td></tr>
-<tr><td>Node block offset</td><td class="mono">Node*</td><td>Offset to the start of the node block, which should be the base node: the parent of all other nodes in the file. This must be a multiple of 4.</td></tr>
+<tr><td>Node block offset</td><td class="mono">Node*</td><td>Offset to the start of the node block, which must be the base node: the parent of all other nodes in the file. This must be a multiple of 4.</td></tr>
 <tr><td>String count</td><td class="mono">UInt32</td><td>Total number of <code>String</code> entries in the file. Cannot be zero.</td></tr>
 <tr><td>String offset table offset</td><td class="mono">OffsetTable*</td><td>Offset to the string offset table in the file, with the number of entries equal to the <code>String</code> count. This must be a multiple of 8.</td></tr>
 <tr><td>Byte Array count</td><td class="mono">UInt32</td><td>Total number of <code>Byte Array</code> entries in the file.</td></tr>
@@ -98,11 +98,11 @@ h1, h2, h3, h4, h5, h6 {
 <h3>Node (20 bytes)</h3>
 <p>Each <code>Node</code> is assigned a zero-based 32-bit unsigned ID in the order they appear in the node block; that is, the first <code>Node</code> (the base node) has ID 0, the second node has ID 1, and so on. This ID is used to point to child nodes of <code>Node</code>s.</p>
 
-<p>All <code>Node</code>s should be in one contiguous block, which should be of size <code>20 * Number of nodes</code>. <code>Node</code>s must be aligned to a 4-byte boundary.</p>
+<p>All <code>Node</code>s must be in one contiguous block, which must be of size <code>20 * Number of nodes</code>. <code>Node</code>s must be aligned to a 4-byte boundary.</p>
 
 <p>Children <code>Node</code>s of each parent <code>Node</code> must be consecutive in one contiguous block, and the ID of the first child in the block is specified in the <code>First Child ID</code> field of the parent <code>Node</code>. Children <code>Node</code>s of each parent <code>Node</code> must be sorted in ascending order according to the UTF-8 value of the node name of each child. Children <code>Node</code>s of any given parent <code>Node</code> must have unique node names.</p>
 
-<p>The base node should have an ID of 0, and <em>preferably</em> have type 0 (None).</p>
+<p>The base node has an ID of 0, and should <em>preferably</em> be of type <code>0</code> (<code>None</code>).</p>
 
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th colspan="3" class="desc">Description</th></tr>
@@ -110,7 +110,7 @@ h1, h2, h3, h4, h5, h6 {
 <tr><td>Node name</td><td class="mono">UInt32</td><td colspan="3"><code>String</code> ID representing the name of this node</td></tr>
 <tr><td>First Child ID</td><td class="mono">UInt32</td><td colspan="3">Node ID of first child. Present but ignored if child count is zero (0).</td></tr>
 <tr><td>Children count</td><td class="mono">UInt16</td><td colspan="3">Zero means there are no children.</td></tr>
-<tr><td>Type</td><td class="mono">UInt16</td><td colspan="3"><code>0 = No data<br />1 = Int64<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Byte Array (UInt32 ID)</code><br />Parsers should ignore types they do not recognise.</td></tr>
+<tr><td>Type</td><td class="mono">UInt16</td><td colspan="3"><code>0 = None<br />1 = Int64<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Byte Array (UInt32 ID)</code><br />Parsers must ignore types they do not recognise.</td></tr>
 <tr><td rowspan="8">Data</td><td rowspan="8">Varies</td><td colspan="3">This field is always 8 bytes.</td></tr>
 
 <tr><th colspan="2">Type</th><th>Description</th></tr>
@@ -133,20 +133,22 @@ h1, h2, h3, h4, h5, h6 {
 </table>
 
 <h3>Byte Array (34+ bytes)</h3>
-<p>Each <code>Byte Array</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>Byte Array</code>s are located in the byte array offset table. Byte arrays do not need to be in a contiguous block, though this is recommended. Byte arrays must be aligned to an 8-byte boundary.</p>
+<p>Each <code>Byte Array</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>Byte Array</code>s are located in the byte array offset table. Byte arrays do not need to be in a contiguous block, though this is recommended. <code>Byte Array</code>s must be aligned to an 8-byte boundary.</p>
 
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Length</td><td class="mono">UInt64</td><td>Length, in bytes, of the <code>Data</code> field.</td></tr>
 <tr><td>Decoded length</td><td class="mono">UInt64</td><td>Length, in bytes, of the byte array once decoded.</td></tr>
-<tr><td>Encoding</td><td class="mono">UInt16</td><td>Encoding. <br /><code>0 = None<br />1 = LZ4<br />2 = Deflate</code></td></tr>
+<tr><td>Encoding</td><td class="mono">UInt16</td><td>Encoding. <br /><code>0 = None<br />1 = LZ4<br />2 = LZ4 Frame<br />3 = Deflate</code></td></tr>
 <tr><td>Metadata</td><td class="mono">UInt8[16]</td><td>This field is ignored by parsers and can be used to store application-specific metadata.</td></tr>
 <tr><td>Data</td><td class="mono">UInt8[]</td><td>Data, encoded using the method specified in <code>Encoding</code>. This byte array is <code>Length</code> bytes long.</td></tr>
 </table>
 
+Note that the <code>LZ4</code> algorithm can only compress up to 2,147,483,647 bytes. For larger sizes, <code>LZ4 Frame</code> should be used.
+
 <h3>Offset Table</h3>
-<p>Offset tables are used to refer to <code>String</code>s and byte arrays. <code>String</code> offsets must be a multiple of 2. Byte array offsets must be a multiple of 8.</p>
+<p>Offset tables are used to refer to <code>String</code>s and byte arrays. <code>String</code> offsets must be a multiple of 2. <code>Byte Array</code> offsets must be a multiple of 8.</p>
 
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
@@ -157,10 +159,10 @@ h1, h2, h3, h4, h5, h6 {
 <h2>WZ-specific Data Types</h2>
 <p>This section recommends how Bitmaps and Audio files from WZs should be stored. This is also how the reference converter, WZ2NX, will store Bitmaps and MP3s.</p>
 
-<p>In a NX file containing Bitmaps and Audio files from WZs that follows this recommendation, the first 2 bytes of the <code>Metadata</code> field of the <code>Header</code> should have bits <code>15</code>, <code>10</code>, <code>6</code> and <code>0</code> set to <code>1</code>, that is, ORed with <code>0b1000010001000001 = {0x84, 0x41}</code>.</p>
+<p>In a NX file containing Bitmaps and Audio files from WZs that follows this recommendation, the first 2 bytes of the <code>Metadata</code> field of the <code>Header</code> must have bits <code>15</code>, <code>10</code>, <code>6</code> and <code>0</code> set to <code>1</code>, that is, ORed with <code>0b1000010001000001 = {0x84, 0x41}</code>.</p>
 
 <h3>Bitmap</h3>
-<p>The 16-byte <code>Metadata</code> field of the byte array containing a bitmap should have the following format.</p>
+<p>The 16-byte <code>Metadata</code> field of the byte array containing a WZ bitmap must have the following format.</p>
 
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
@@ -171,9 +173,9 @@ h1, h2, h3, h4, h5, h6 {
 <tr><td>Height</td><td class="mono">UInt32</td><td>Height of the image.</td></tr>
 </table>
 
-<p>Note that since NX is a little-endian format, e.g. ARGB is actually stored as BGRA &mdash; it is treated as a 32-bit field, and not four octets.</p>
+<p>Note that since NX is a little-endian format, e.g. <code>ARGB</code> is actually stored as <code>BGRA</code> &mdash; it is treated as a 32-bit field, and not four octets.</p>
 
-<p>If bitmap data is omitted in an NX file, the <code>Node</code>s containing a bitmap should point to an empty byte array. Otherwise, the structure of the data within the byte array is as follows.</p>
+<p>If bitmap data is omitted in an NX file, the <code>Node</code>s containing a bitmap must point to an empty byte array. Otherwise, the structure of the data within the byte array is as follows.</p>
 
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
@@ -182,7 +184,7 @@ h1, h2, h3, h4, h5, h6 {
 </table>
 
 <h3>Audio</h3>
-<p>The 16-byte <code>Metadata</code> field of the byte array containing audio should have the following format.</p>
+<p>The 16-byte <code>Metadata</code> field of the byte array containing audio must have the following format.</p>
 
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
@@ -192,14 +194,14 @@ h1, h2, h3, h4, h5, h6 {
 <tr><td>Null</td><td class="mono">UInt8[8]</td><td>{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}</td></tr>
 </table>
 
-<p>If audio data is omitted in an NX file, the <code>Node</code>s containing audio should point to an empty byte array. Otherwise, the structure of the data within the byte array is as follows.</p>
+<p>If audio data is omitted in an NX file, the <code>Node</code>s containing audio must point to an empty byte array. Otherwise, the structure of the data within the byte array is as follows.</p>
 
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Header length</td><td class="mono">UInt16</td><td>Length of the header.</td></tr>
 <tr><td>Header</td><td class="mono"><a href="https://msdn.microsoft.com/en-us/library/dd757713.aspx">WAVEFORMATEX</a></td><td>Format header. This structure is <code>Header length</code> bytes long.</td></tr>
-<tr><td>Audio data</td><td class="mono">UInt8[]</td><td>Audio data. This byte array is <code>Length - Header length</code> bytes long. <code>Length</code> is specified in the <code>Byte Array</code> structure.</td></tr>
+<tr><td>Audio data</td><td class="mono">UInt8[]</td><td>Audio data. This byte array is <code>Length &minus; Header length &minus; 2</code> bytes long. <code>Length</code> is specified in the <code>Byte Array</code> structure.</td></tr>
 </table>
 
 <h4>Acknowledgements</h4>
