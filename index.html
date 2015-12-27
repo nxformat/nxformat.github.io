@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>NX (PKG4) Format Specification</title>
+<title>NX (PKG5) Format Specification</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <style type="text/css">
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700|Inconsolata);
 body {
-    font-family:sans-serif;
+    font-family: 'Source Sans Pro', sans-serif;
     margin: 0 auto;
-    width: 85%;
+    max-width: 1000px;
+    padding: 0 3%;
+    box-sizing: content-box;
 }
 table { 
     border-collapse: collapse;
     width: 100%;
+    margin-bottom: 6pt;
 }
 table, td, th {
     border: 1px solid black;
@@ -25,38 +29,43 @@ th {
     font-weight: bold;
 }
 th.name {
-    width:12.2%;
-    min-width:11em;
+    width: 12.2%;
+    min-width: 11em;
 }
 th.type {
-    width:8.5%;
-    min-width:6.7em;
+    width: 8.5%;
+    min-width: 6.7em;
 }
-.mono {
-    font-family: monospace;
+.mono, code {
+    font-family: 'Inconsolata', 'Consolas', monospace;
+}
+p {
+    margin-top: 0px;
+    margin-bottom: 6pt;
+}
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 18px;
+    margin-bottom: 0px;
 }
 </style>
 </head>
 <body>
-<h1>3rd NX File Format [PKG4.1]</h1>
+<h1>4th NX File Format [PKG5]</h1>
 <p>The NX file format was designed with speediness and ease of reading in mind, to speed up loading times for anything that uses a node-tree-based data file format.</p>
 
-<p>In the NX file format, the following should be followed:</p>
-
+<p>In the NX file format, the following must be followed:</p>
 <ul>
 <li>All offsets are unsigned 64-bit integers, zero-based, and are from the beginning of the file.</li>
-<li>Signed integers use Two's complement.</li>
+<li>Signed integers use two's complement.</li>
 <li>All multi-byte integer and and floating point types are in little endian byte order.</li>
 <li>Floating point types follow IEEE standards.</li>
-<li>Any compression should be done using LZ4.</li>
-<li>The file extension should be <strong>.nx</strong>.</li>
+<li>The file extension is <strong>.nx</strong>.</li>
 </ul>
 
 <p>These are the reference implementations of the NX format:</p>
-
 <ul>
 <li><a href="https://github.com/NoLifeDev/NoLifeNx">NoLifeNx</a> (C++), by retep998, a library for reading NX files.</li>
-<li><a href="https://github.com/NoLifeDev/NoLifeWzToNx">NoLifeWzToNx</a> (C++), by retep998, a tool to convert WZ files to NX.</li>
+<li><a href="https://github.com/NoLifeDev/nx-rs">nx-rs</a> (Rust), by retep998, a library for reading NX files.</li>
 <li><a href="https://github.com/angelsl/ms-reNX">reNX</a> (C#), by angelsl, a library for reading and writing NX files.</li>
 <li><a href="https://github.com/angelsl/ms-wz2nx">WZ2NX</a> (C#), by angelsl, a tool to convert WZ files to NX.</li>
 </ul>
@@ -68,43 +77,41 @@ th.type {
 <tr><td>Node data</td><td class="mono">Node[]</td><td>Node data, including all children.</td></tr>
 <tr><td>String offset table</td><td class="mono">UInt64[]</td><td>String offset table. Contiguous block.</td></tr>
 <tr><td>String data</td><td class="mono">String[]</td><td>String data.</td></tr>
-<tr><td>Bitmap offset table</td><td class="mono">UInt64[]</td><td>Bitmap offset table. Contiguous block.</td></tr>
-<tr><td>Bitmaps</td><td class="mono">Bitmap[]</td><td>Bitmap data.</td></tr>
-<tr><td>Audio offset table</td><td class="mono">UInt64[]</td><td>Audio offset table. Contiguous block.</td></tr>
-<tr><td>Audio data</td><td class="mono">Audio[]</td><td>Audio data.</td></tr>
+<tr><td>Byte Array offset table</td><td class="mono">UInt64[]</td><td>Byte array offset table. Contiguous block.</td></tr>
+<tr><td>Byte Arrays</td><td class="mono">Byte Array[]</td><td>Byte array data.</td></tr>
 </table>
 
-<h3>Header (52 bytes)</h3>
+<h3>Header (40+ bytes)</h3>
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">"PKG4" = {0x50, 0x4B, 0x47, 0x34}</td></tr>
+<tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">"PKG5" = {0x50, 0x4B, 0x47, 0x35}</td></tr>
 <tr><td>Node count</td><td class="mono">UInt32</td><td>Total number of nodes in the file. Cannot be zero.</td></tr>
-<tr><td>Node block offset</td><td class="mono">Node*</td><td>Offset to the start of the node block, which should be the base node: the parent of all other nodes in the file. This must be a multiple of 4.</td></tr>
+<tr><td>Node block offset</td><td class="mono">Node*</td><td>Offset to the start of the node block, which must be the base node: the parent of all other nodes in the file. This must be a multiple of 4.</td></tr>
 <tr><td>String count</td><td class="mono">UInt32</td><td>Total number of <code>String</code> entries in the file. Cannot be zero.</td></tr>
 <tr><td>String offset table offset</td><td class="mono">OffsetTable*</td><td>Offset to the string offset table in the file, with the number of entries equal to the <code>String</code> count. This must be a multiple of 8.</td></tr>
-<tr><td>Bitmap count</td><td class="mono">UInt32</td><td>Total number of <code>Bitmap</code> entries in the file. Zero indicates no bitmap data.</td></tr>
-<tr><td>Bitmap offset table offset</td><td class="mono">OffsetTable*</td><td>Offset to the bitmap offset table in the file, with the number of entries equal to <code>Bitmap count</code>. This must be a multiple of 8. Ignored if <code>Bitmap count</code> is <code>0</code>.</td></tr>
-<tr><td>Audio count</td><td class="mono">UInt32</td><td>Total number of <code>Audio</code> entries in the file. Zero indicates no audio data.</td></tr>
-<tr><td>Audio offset table offset</td><td class="mono">OffsetTable*</td><td>Offset to the audio offset table in the file, with the number of entries equal to <code>Audio count</code>. This must be a multiple of 8. Ignored if <code>Audio count</code> is <code>0</code>.</td></tr>
+<tr><td>Byte Array count</td><td class="mono">UInt32</td><td>Total number of <code>Byte Array</code> entries in the file.</td></tr>
+<tr><td>Byte Array offset table offset</td><td class="mono">OffsetTable*</td><td>Offset to the byte array offset table, with the number of entries equal to the <code>Byte Array count</code>. This must be a multiple of 8.</td></tr>
+<tr><td>Metadata</td><td class="mono">UInt8[]</td><td>This field is ignored by parsers and can be used to store application-specific metadata. Note that this field can be of any length, by virtue of NX being offset-based.</td></tr>
 </table>
 
 <h3>Node (20 bytes)</h3>
-<p>Each <code>Node</code> is assigned a zero-based 32-bit unsigned ID in the order they appear in the node block; that is, the first <code>Node</code> (the base node) has ID 0, the second node has ID 1, and so on. This ID is used to point to child nodes of <code>Node</code>s.<br />
-<br />
-All <code>Node</code>s should be in one contiguous block, which should be of size <code>20 * Number of nodes</code>. <code>Node</code>s must be aligned to an 8-byte boundary.<br />
-<br />
-Children <code>Node</code>s of each parent <code>Node</code> must be consecutive in one contiguous block, and the ID of the first child in the block is specified in the <code>First Child ID</code> field of the parent <code>Node</code>. Children <code>Node</code>s of each parent <code>Node</code> must be sorted in ascending order according to the UTF-8 value of the node name of each child. Children <code>Node</code>s of any given parent <code>Node</code> must have unique node names.<br />
-<br />
-The base node should have an ID of 0, and <em>preferably</em> have type 0 (None).</p>
+<p>Each <code>Node</code> is assigned a zero-based 32-bit unsigned ID in the order they appear in the node block; that is, the first <code>Node</code> (the base node) has ID 0, the second node has ID 1, and so on. This ID is used to point to child nodes of <code>Node</code>s.</p>
+
+<p>All <code>Node</code>s must be in one contiguous block, which must be of size <code>20 * Number of nodes</code>. <code>Node</code>s must be aligned to a 4-byte boundary.</p>
+
+<p>Children <code>Node</code>s of each parent <code>Node</code> must be consecutive in one contiguous block, and the ID of the first child in the block is specified in the <code>First Child ID</code> field of the parent <code>Node</code>. Children <code>Node</code>s of each parent <code>Node</code> must be sorted in ascending order according to the UTF-8 value of the node name of each child. Children <code>Node</code>s of any given parent <code>Node</code> must have unique node names.</p>
+
+<p>The base node has an ID of 0, and should <em>preferably</em> be of type <code>0</code> (<code>None</code>).</p>
+
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th colspan="3" class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Node name</td><td class="mono">UInt32</td><td colspan="3"><code>String</code> ID representing the name of this node</td></tr>
 <tr><td>First Child ID</td><td class="mono">UInt32</td><td colspan="3">Node ID of first child. Present but ignored if child count is zero (0).</td></tr>
 <tr><td>Children count</td><td class="mono">UInt16</td><td colspan="3">Zero means there are no children.</td></tr>
-<tr><td>Type</td><td class="mono">UInt16</td><td class="mono" colspan="3">0 = No data<br />1 = Int64<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Bitmap (UInt32 ID, UInt16 Width, UInt16 Height)<br />6 = Audio (UInt32 ID, UInt32 Length)</td></tr>
-<tr><td rowspan="9">Data</td><td rowspan="9">Varies</td><td colspan="3">This field is always 8 bytes.
+<tr><td>Type</td><td class="mono">UInt16</td><td colspan="3"><code>0 = None<br />1 = Int64<br />2 = Double<br />3 = String (UInt32 ID)<br />4 = Vector<br />5 = Byte Array (UInt32 ID)</code><br />Parsers must ignore types they do not recognise.</td></tr>
+<tr><td rowspan="8">Data</td><td rowspan="8">Varies</td><td colspan="3">This field is always 8 bytes.</td></tr>
 
 <tr><th colspan="2">Type</th><th>Description</th></tr>
 <tr><td class="mono">0</td><td class="mono">None</td><td>This field is ignored.</td></tr>
@@ -112,13 +119,12 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <tr><td class="mono">2</td><td class="mono">Double</td><td>64-bit IEEE double-precision floating point.</td></tr>
 <tr><td class="mono">3</td><td class="mono">String</td><td>32-bit unsigned string ID.</td></tr>
 <tr><td class="mono">4</td><td class="mono">Vector</td><td>Two 32-bit signed integers (<code>Int32</code>), for X and Y respectively.</td></tr>
-<tr><td class="mono">5</td><td class="mono">Bitmap</td><td>32-bit unsigned bitmap ID, followed by 16-bit unsigned width and height in that order. Ignored if <code>Bitmap count</code> in <code>Header</code> is <code>0</code>.</td></tr>
-<tr><td class="mono">6</td><td class="mono">Audio</td><td>32-bit unsigned audio ID, followed by 32-bit unsigned data length. Ignored if <code>Audio count</code> in <code>Header</code> is <code>0</code>.</td></tr>
-</td></tr>
+<tr><td class="mono">5</td><td class="mono">Byte array</td><td>32-bit unsigned byte array ID. Ignored if <code>Byte Array count</code> in <code>Header</code> is <code>0</code>.</td></tr>
 </table>
 
-<h3>String (2-65537 bytes)</h3>
+<h3>String (2&ndash;65537 bytes)</h3>
 <p>Each <code>String</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>String</code>s are located in the String offset table. <code>String</code>s do not need to be in a contiguous block, though this is recommended. <code>String</code>s must be aligned to a 2-byte boundary.</p>
+
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
@@ -126,44 +132,90 @@ The base node should have an ID of 0, and <em>preferably</em> have type 0 (None)
 <tr><td>String data</td><td class="mono">UInt8[]</td><td>String data, encoded in UTF-8. This byte array is <code>Length</code> bytes long.</td></tr>
 </table>
 
-<h3>Bitmap (4-4294967299 bytes)</h3>
-<p>Each <code>Bitmap</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>Bitmap</code>s are located in the bitmap offset table. <code>Bitmap</code>s do not need to be in a contiguous block, though this is recommended.</p>
+<h3>Byte Array (34+ bytes)</h3>
+<p>Each <code>Byte Array</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>Byte Array</code>s are located in the byte array offset table. Byte arrays do not need to be in a contiguous block, though this is recommended. <code>Byte Array</code>s must be aligned to an 8-byte boundary.</p>
+
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Length</td><td class="mono">UInt32</td><td>Length, in bytes, of the image data. Uncompressed length is <code>Width * Height * 4</code>. <code>Width</code> and <code>Height</code> are specified in the <code>Node</code>'s <code>Data</code> field after the bitmap ID.</td></tr>
-<tr><td>Bitmap data</td><td class="mono">UInt8[]</td><td>Bitmap data, stored in BGRA8888 format, that is, 1 byte each for the blue, green, red and alpha components, in that order. This data is compressed with LZ4. This byte array is <code>Length</code> bytes long.</td></tr>
+<tr><td>Length</td><td class="mono">UInt64</td><td>Length, in bytes, of the <code>Data</code> field.</td></tr>
+<tr><td>Decoded length</td><td class="mono">UInt64</td><td>Length, in bytes, of the byte array once decoded.</td></tr>
+<tr><td>Encoding</td><td class="mono">UInt16</td><td>Encoding. <br /><code>0 = None<br />1 = LZ4<br />2 = LZ4 Frame<br />3 = Deflate</code></td></tr>
+<tr><td>Metadata</td><td class="mono">UInt8[16]</td><td>This field is ignored by parsers and can be used to store application-specific metadata.</td></tr>
+<tr><td>Data</td><td class="mono">UInt8[]</td><td>Data, encoded using the method specified in <code>Encoding</code>. This byte array is <code>Length</code> bytes long.</td></tr>
 </table>
 
-<h3>Audio (0-4294967295 bytes)</h3>
-<p>Each <code>Audio</code> is assigned a zero-based unsigned 32-bit ID. Offsets to <code>Audio</code>s are located in the audio offset table. <code>Audio</code>s do not need to be a contiguous block, though this is recommended.</p>
-<table>
-<tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
-<!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
-<tr><td>Audio data</td><td class="mono">UInt8[]</td><td>Audio data, including the 82-byte WZ header. This byte array is <code>Length</code> bytes long. Length is specified in the NX node's data field after the audio ID.</td></tr>
-</table>
+Note that the <code>LZ4</code> algorithm can only compress up to 2,147,483,647 bytes. For larger sizes, <code>LZ4 Frame</code> should be used.
 
 <h3>Offset Table</h3>
-<p>Offset tables are used to refer to <code>String</code>s, <code>Bitmap</code>s and <code>Audio</code>s. String offsets must be a multiple of 2. Bitmap and audio offsets must be a multiple of 8.</p>
+<p>Offset tables are used to refer to <code>String</code>s and byte arrays. <code>String</code> offsets must be a multiple of 2. <code>Byte Array</code> offsets must be a multiple of 8.</p>
+
 <table>
 <tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
 <!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
 <tr><td>Offset Array</td><td class="mono">UInt64[]</td><td>Sequential offset array; the first offset has ID 0, the second has ID 1, and so on.</td></tr>
 </table>
 
-<p><strong>Acknowledgements:</strong></p>
+<h2>WZ-specific Data Types</h2>
+<p>This section recommends how Bitmaps and Audio files from WZs should be stored. This is also how the reference converter, WZ2NX, will store Bitmaps and MP3s.</p>
+
+<p>In a NX file containing Bitmaps and Audio files from WZs that follows this recommendation, the first 2 bytes of the <code>Metadata</code> field of the <code>Header</code> must have bits <code>15</code>, <code>10</code>, <code>6</code> and <code>0</code> set to <code>1</code>, that is, ORed with <code>0b1000010001000001 = {0x84, 0x41}</code>.</p>
+
+<h3>Bitmap</h3>
+<p>The 16-byte <code>Metadata</code> field of the byte array containing a WZ bitmap must have the following format.</p>
+
+<table>
+<tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
+<!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
+<tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">"WZBM" = {0x57, 0x5A, 0x42, 0x4D}</td></tr>
+<tr><td>Format</td><td class="mono">UInt32</td><td>Format of the image. <br /><code>0 = 32 bpp ARGB</code></td></tr>
+<tr><td>Width</td><td class="mono">UInt32</td><td>Width of the image.</td></tr>
+<tr><td>Height</td><td class="mono">UInt32</td><td>Height of the image.</td></tr>
+</table>
+
+<p>Note that since NX is a little-endian format, e.g. <code>ARGB</code> is actually stored as <code>BGRA</code> &mdash; it is treated as a 32-bit field, and not four octets.</p>
+
+<p>If bitmap data is omitted in an NX file, the <code>Node</code>s containing a bitmap must point to an empty byte array. Otherwise, the structure of the data within the byte array is as follows.</p>
+
+<table>
+<tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
+<!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
+<tr><td>Data</td><td class="mono">UInt8[]</td><td>Bitmap data. This byte array is <code>Length</code> bytes long. Length is specified in the <code>Byte Array</code> structure.</td></tr>
+</table>
+
+<h3>Audio</h3>
+<p>The 16-byte <code>Metadata</code> field of the byte array containing audio must have the following format.</p>
+
+<table>
+<tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
+<!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
+<tr><td>Magic</td><td class="mono">UInt8[4]</td><td class="mono">"WZAU" = {0x57, 0x5A, 0x41, 0x55}</td></tr>
+<tr><td>Duration</td><td class="mono">UInt32</td><td>Audio duration, in milliseconds.</td></tr>
+<tr><td>Null</td><td class="mono">UInt8[8]</td><td>{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}</td></tr>
+</table>
+
+<p>If audio data is omitted in an NX file, the <code>Node</code>s containing audio must point to an empty byte array. Otherwise, the structure of the data within the byte array is as follows.</p>
+
+<table>
+<tr><th class="name">Name</th><th class="type">Type</th><th class="desc">Description</th></tr>
+<!-- <tr><td></td><td class="mono"></td><td></td></tr> -->
+<tr><td>Header length</td><td class="mono">UInt16</td><td>Length of the header.</td></tr>
+<tr><td>Header</td><td class="mono"><a href="https://msdn.microsoft.com/en-us/library/dd757713.aspx">WAVEFORMATEX</a></td><td>Format header. This structure is <code>Header length</code> bytes long.</td></tr>
+<tr><td>Audio data</td><td class="mono">UInt8[]</td><td>Audio data. This byte array is <code>Length &minus; Header length &minus; 2</code> bytes long. <code>Length</code> is specified in the <code>Byte Array</code> structure.</td></tr>
+</table>
+
+<h4>Acknowledgements</h4>
 <ul>
-<li><strong><a href="https://github.com/retep998">Retep998</a></strong>, one of the two co-writers of the NX format.</li>
-<li><strong><a href="https://github.com/angelsl">angelsl</a></strong>, the other co-writer and the author of this Specification.</li>
-<li><strong><a href="https://github.com/aaronweiss74">aaronweiss74</a></strong>, for his suggestions, help and support, and for writing <a href="https://github.com/aaronweiss74/pkgnx">pkgnx</a>.</li>
+<li><strong><a href="https://github.com/retep998">retep998</a></strong> and <strong><a href="https://github.com/angelsl">angelsl</a></strong>, the two co-writers of the NX format.</li>
+<li><strong><a href="https://github.com/aatxe">aaronweiss74</a></strong>, for his suggestions, help and support, and for writing <a href="https://github.com/aatxe/pkgnx">pkgnx</a>.</li>
 <li><strong><a href="https://github.com/Zepheus">Cedric</a></strong>, for his suggestions, help and support, and for writing <a href="https://github.com/Zepheus/javanx">javanx</a>.</li>
 <li><strong><a href="https://github.com/strax">Sami</a></strong>, for his support and for writing <a href="https://github.com/strax/nx-pkg4">nx-pkg4</a>.</li>
-<li><strong><a href="http://code.google.com/p/lz4/">LZ4</a></strong>, the compression algorithm used in NX.</li>
-<li><strong><a href="http://github.com/">GitHub</a></strong>, for hosting this and all our projects.</li>
+<li><strong><a href="https://cyan4973.github.io/lz4/">LZ4</a></strong>, the compression algorithm used in NX.</li>
+<li><strong><a href="https://github.com/">GitHub</a></strong>, for hosting this and all our projects.</li>
 </ul>
 
-<p>Contributions to this specification are welcome. Please fork and then send a pull request to <a href="https://github.com/nxformat/nxformat.github.com">this repository</a>.<br />
-<br />
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png" /></a><br />This <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text" rel="dct:type">specification</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+<p>Contributions to this specification are welcome. Please fork and then send a pull request to <a href="https://github.com/nxformat/nxformat.github.com">this repository</a>.</p>
+
+<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/80x15.png" /></a> This specification is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.</p>
 </body>
 </html>
